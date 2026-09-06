@@ -1,0 +1,6 @@
+{
+  "name": "CampusOS",
+  "description": "CampusOS is an AI-powered Student Operating System that helps university students understand where they are, what they have achieved, what they are missing, and what to do next.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
