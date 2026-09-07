@@ -20,6 +20,7 @@ import {
   GitBranch,
   Linkedin,
   Bot,
+  Shield,
 } from 'lucide-react';
 import { StudentUser } from '../../types';
 import { CampusOSLogo } from '../common/CampusOSLogo';
@@ -32,6 +33,7 @@ interface SidebarProps {
   onCloseMobile?: () => void;
   onLogout?: () => void;
   onStartOnboarding?: () => void;
+  onSwitchToAdmin?: () => void;
   user?: StudentUser;
 }
 
@@ -43,6 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
   onLogout,
   onStartOnboarding,
+  onSwitchToAdmin,
   user,
 }) => {
   const overviewNavItems = [
@@ -173,6 +176,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Bottom User / Session Section */}
       <div className="mt-2.5 pt-2.5 border-t border-slate-100 space-y-1.5 shrink-0">
+        {onSwitchToAdmin && (
+          <button
+            id="sidebar-admin-switch-btn"
+            onClick={onSwitchToAdmin}
+            className="flex items-center justify-between w-full rounded-xl bg-indigo-50/80 hover:bg-indigo-100/90 text-indigo-700 px-2.5 py-1.5 text-[11px] font-bold border border-indigo-200/80 transition active:scale-[0.98] cursor-pointer shadow-2xs"
+            title="Switch to Institutional Admin Portal"
+          >
+            <span className="flex items-center gap-1.5">
+              <Shield className="h-3.5 w-3.5 text-indigo-600" />
+              <span>Admin Portal</span>
+            </span>
+            <span className="text-[9.5px] font-semibold bg-white text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">
+              Staff
+            </span>
+          </button>
+        )}
         {onLogout && (
           <button
             id="sidebar-logout-btn"

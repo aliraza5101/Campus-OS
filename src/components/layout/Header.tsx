@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bell, Menu, LogOut, User, Settings, GraduationCap } from 'lucide-react';
+import { Bell, Menu, LogOut, User, Settings, GraduationCap, Shield } from 'lucide-react';
 import { StudentUser } from '../../types';
 
 interface HeaderProps {
@@ -23,6 +23,7 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigateProfile,
   onOpenMobileMenu,
   unreadCount = 2,
+  onSwitchToAdmin,
   onLogout,
 }) => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -82,8 +83,22 @@ export const Header: React.FC<HeaderProps> = ({
         </p>
       </div>
 
-      {/* Right: Notifications & User Profile Menu (Both Circular) */}
+      {/* Right: Notifications, Admin Switcher & User Profile Menu */}
       <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 justify-end">
+        {/* Admin Portal Quick Switcher Button */}
+        {onSwitchToAdmin && (
+          <button
+            id="header-switch-to-admin-btn"
+            type="button"
+            onClick={onSwitchToAdmin}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-indigo-200 bg-indigo-50/90 text-xs font-bold text-[#283593] hover:bg-indigo-100 hover:border-indigo-300 transition active:scale-95 shadow-2xs cursor-pointer"
+            title="Switch to Institutional Admin Portal"
+          >
+            <Shield className="h-3.5 w-3.5 text-[#283593]" />
+            <span className="hidden sm:inline">Admin Portal</span>
+          </button>
+        )}
+
         {/* Notification Bell Button (Circular) */}
         <button
           id="header-notifications-btn"
@@ -160,6 +175,20 @@ export const Header: React.FC<HeaderProps> = ({
                   <Settings className="h-3.5 w-3.5 text-slate-500" />
                   <span>Settings</span>
                 </button>
+
+                {onSwitchToAdmin && (
+                  <button
+                    id="header-menu-admin-btn"
+                    onClick={() => {
+                      setIsProfileMenuOpen(false);
+                      onSwitchToAdmin();
+                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-xs font-bold text-[#283593] bg-indigo-50/70 hover:bg-indigo-100 rounded-xl transition text-left cursor-pointer"
+                  >
+                    <Shield className="h-3.5 w-3.5 text-[#283593]" />
+                    <span>Admin Portal</span>
+                  </button>
+                )}
 
                 {onLogout && (
                   <button

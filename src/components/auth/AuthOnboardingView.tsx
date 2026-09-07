@@ -515,7 +515,11 @@ export const AuthOnboardingView: React.FC<AuthOnboardingViewProps> = ({
 
     setIsSigningIn(true);
     try {
-      await onLoginAsStudent(signInEmail.trim(), signInPassword.trim());
+      if (loginRoleTab === 'admin') {
+        await onLoginAsAdmin(signInEmail.trim(), signInPassword.trim());
+      } else {
+        await onLoginAsStudent(signInEmail.trim(), signInPassword.trim());
+      }
     } catch (err: any) {
       setSignInError(err.message || 'Invalid email or password.');
     } finally {
@@ -1896,27 +1900,80 @@ export const AuthOnboardingView: React.FC<AuthOnboardingViewProps> = ({
             /* ========================================================================= */
             /* QUICK SIGN IN PANEL                                                       */
             /* ========================================================================= */
-            <div className="space-y-6 animate-in fade-in duration-200">
+            <div className="space-y-5 animate-in fade-in duration-200">
               <div>
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#283593] bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
-                    <KeyRound className="h-3 w-3" />
-                    Sign In
+                  <span className={`inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border transition ${
+                    loginRoleTab === 'admin'
+                      ? 'text-indigo-700 bg-indigo-50 border-indigo-200'
+                      : 'text-[#283593] bg-blue-50 border-blue-100'
+                  }`}>
+                    {loginRoleTab === 'admin' ? (
+                      <>
+                        <Shield className="h-3 w-3" />
+                        Admin Portal
+                      </>
+                    ) : (
+                      <>
+                        <KeyRound className="h-3 w-3" />
+                        Student Sign In
+                      </>
+                    )}
                   </span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-1.5">
-                  Sign in to CampusOS
+                  {loginRoleTab === 'admin' ? 'Institutional Admin Portal' : 'Sign in to CampusOS'}
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                  Access your semester milestones, career roadmap, or institutional dashboard.
+                  {loginRoleTab === 'admin'
+                    ? 'Faculty, Dean & Administrator control center for student career outcomes.'
+                    : 'Access your semester milestones, career roadmap, or institutional dashboard.'}
                 </p>
+              </div>
+
+              {/* Portal Role Switcher Tabs */}
+              <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl border border-slate-200 gap-1">
+                <button
+                  id="tab-role-student"
+                  type="button"
+                  onClick={() => {
+                    setLoginRoleTab('student');
+                    setSignInError(null);
+                  }}
+                  className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition cursor-pointer ${
+                    loginRoleTab === 'student'
+                      ? 'bg-white text-[#283593] shadow-xs'
+                      : 'text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  <GraduationCap className="h-3.5 w-3.5" />
+                  <span>Student Sign In</span>
+                </button>
+                <button
+                  id="tab-role-admin"
+                  type="button"
+                  onClick={() => {
+                    setLoginRoleTab('admin');
+                    setSignInError(null);
+                    if (!signInEmail) setSignInEmail('admin@campus.edu');
+                    if (!signInPassword) setSignInPassword('CampusAdmin2025!');
+                  }}
+                  className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition cursor-pointer ${
+                    loginRoleTab === 'admin'
+                      ? 'bg-[#283593] text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  <Shield className="h-3.5 w-3.5" />
+                  <span>Admin Portal</span>
+                </button>
               </div>
 
               {/* Direct Institutional & Student Sign In Form */}
               <form
                 id="sign-in-form-email"
                 onSubmit={handleEmailSignIn}
-                className="space-y-3 pt-1"
+                className="space-y-3 pt-0.5"
               >
                 {signInError && (
                   <div className="p-2.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-600 font-medium animate-in fade-in">
@@ -1925,7 +1982,7 @@ export const AuthOnboardingView: React.FC<AuthOnboardingViewProps> = ({
                 )}
                 <div>
                   <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    Email Address *
+                    {loginRoleTab === 'admin' ? 'Institutional Admin Email *' : 'Email Address *'}
                   </label>
                   <input
                     id="sign-in-input-email"
@@ -1933,7 +1990,7 @@ export const AuthOnboardingView: React.FC<AuthOnboardingViewProps> = ({
                     required
                     value={signInEmail}
                     onChange={(e) => setSignInEmail(e.target.value)}
-                    placeholder="Enter your email address"
+                    placeholder={loginRoleTab === 'admin' ? 'admin@campus.edu' : 'Enter your email address'}
                     className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:border-[#283593] focus:ring-1 focus:ring-[#283593] outline-none transition"
                   />
                 </div>
@@ -1959,58 +2016,68 @@ export const AuthOnboardingView: React.FC<AuthOnboardingViewProps> = ({
                     disabled={isSigningIn}
                     className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#283593] text-white px-4 py-2.5 text-xs sm:text-sm font-bold hover:bg-[#1f297e] active:scale-[0.99] transition shadow-xs disabled:opacity-50 cursor-pointer"
                   >
-                    <LogIn className="h-4 w-4" />
-                    <span>{isSigningIn ? 'Signing In...' : 'Sign In to CampusOS'}</span>
+                    {loginRoleTab === 'admin' ? (
+                      <>
+                        <Shield className="h-4 w-4" />
+                        <span>{isSigningIn ? 'Authenticating Admin...' : 'Sign In as Administrator'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <LogIn className="h-4 w-4" />
+                        <span>{isSigningIn ? 'Signing In...' : 'Sign In to CampusOS'}</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </form>
 
-              {/* Dev Only Demo Profiles */}
-              {!import.meta.env.PROD && (
-                <>
-                  <div className="relative flex items-center justify-center py-1">
-                    <div className="w-full border-t border-slate-200" />
-                    <span className="absolute bg-white px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                      Development Test Profiles
-                    </span>
-                  </div>
+              {/* Institutional Admin Quick Access Card - Always Available */}
+              <div className="relative flex items-center justify-center py-1">
+                <div className="w-full border-t border-slate-200" />
+                <span className="absolute bg-white px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  Institutional Admin Demo Access
+                </span>
+              </div>
 
-                  <div className="space-y-3">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSignInEmail('admin@campus.edu');
-                        setSignInPassword('CampusAdmin2025!');
-                        setAdminStaffId('ADM-2024-001');
-                        setAdminDeptCode('CS-DEAN-01');
-                        setAdminSecurityPin('123456');
-                        setShowAdminVerification(true);
-                      }}
-                      className="w-full flex items-center justify-between p-4 rounded-2xl border border-indigo-200 bg-indigo-50/30 hover:bg-indigo-100/60 hover:border-indigo-300 transition text-left group active:scale-[0.99] shadow-2xs cursor-pointer"
-                    >
-                      <div className="flex items-center gap-3.5">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 text-white font-bold text-sm shadow-xs">
-                          SM
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition">
-                              Dr. Sarah Malik
-                            </span>
-                            <span className="text-[10px] font-semibold bg-white border border-indigo-200 px-1.5 py-0.5 rounded text-indigo-700">
-                              Admin / Dean
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-slate-500">
-                            Dean of Computing • Institutional Control Center
-                          </p>
-                        </div>
+              <div className="space-y-3">
+                <button
+                  id="admin-demo-quick-login-btn"
+                  type="button"
+                  onClick={() => {
+                    setLoginRoleTab('admin');
+                    setSignInEmail('admin@campus.edu');
+                    setSignInPassword('CampusAdmin2025!');
+                    setAdminStaffId('ADM-2024-001');
+                    setAdminDeptCode('CS-DEAN-01');
+                    setAdminSecurityPin('123456');
+                    setShowAdminVerification(true);
+                  }}
+                  className="w-full flex items-center justify-between p-4 rounded-2xl border border-indigo-200 bg-indigo-50/40 hover:bg-indigo-100/70 hover:border-indigo-300 transition text-left group active:scale-[0.99] shadow-2xs cursor-pointer"
+                >
+                  <div className="flex items-center gap-3.5">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-600 text-white font-bold text-sm shadow-xs">
+                      SM
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition">
+                          Dr. Sarah Malik
+                        </span>
+                        <span className="text-[10px] font-semibold bg-white border border-indigo-200 px-1.5 py-0.5 rounded text-indigo-700">
+                          Admin / Dean
+                        </span>
                       </div>
-                      <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-indigo-600 transition" />
-                    </button>
+                      <p className="text-[11px] text-slate-500">
+                        Dean of Computing • Institutional Control Center Access
+                      </p>
+                    </div>
                   </div>
-                </>
-              )}
+                  <div className="flex items-center gap-1 text-xs font-bold text-indigo-600 bg-white px-2.5 py-1 rounded-lg border border-indigo-200 group-hover:border-indigo-400 transition">
+                    <span>Clearance</span>
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </div>
+                </button>
+              </div>
 
               {/* Bottom Switch back to Sign Up flow */}
               <div className="pt-2 text-center">

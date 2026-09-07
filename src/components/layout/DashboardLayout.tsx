@@ -58,6 +58,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
         onLogout={onLogout}
         onStartOnboarding={onStartOnboarding}
+        onSwitchToAdmin={onSwitchToAdmin}
         user={user}
       />
 
