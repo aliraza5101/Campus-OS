@@ -54,34 +54,34 @@ University students often struggle to answer four foundational questions:
 ```mermaid
 graph TD
     subgraph Frontend ["Client Layer (React 19 + TypeScript + TailwindCSS v4)"]
-        UI_Student[Student Dashboard & Journey Views]
-        UI_AI[Campus GPT AI Mentor Chat & SSE Stream]
-        UI_Admin[Institutional Admin Management Portal]
-        UI_Auth[Multi-Step Auth & Onboarding Flow]
+        UI_Student["Student Dashboard and Journey Views"]
+        UI_AI["Campus GPT AI Mentor Chat and SSE Stream"]
+        UI_Admin["Institutional Admin Management Portal"]
+        UI_Auth["Multi-Step Auth and Onboarding Flow"]
     end
 
     subgraph Server ["Backend Layer (Express + TypeScript on Node.js)"]
-        SVR_Router[Modular Express Router]
-        MW_Auth[JWT & RBAC Middleware]
-        ENG_Pillars[Semester-Aware Focus Pillars Engine]
-        ENG_Readiness[Career Readiness & Diagnostic Engine]
-        ENG_AI[Multi-Provider AI Orchestrator]
+        SVR_Router["Modular Express Router"]
+        MW_Auth["JWT and RBAC Middleware"]
+        ENG_Pillars["Semester-Aware Focus Pillars Engine"]
+        ENG_Readiness["Career Readiness and Diagnostic Engine"]
+        ENG_AI["Multi-Provider AI Orchestrator"]
     end
 
-    subgraph AI_Providers ["AI Mentor Core (Streaming & Fallbacks)"]
-        AI_Groq[Groq LPU Engine: Qwen 3.8 / Compound / GPT-OSS]
-        AI_Grok[xAI Grok: grok-2-latest / grok-beta]
-        AI_Gemini[Google Gemini 3.7 / 2.4 Flash with Thinking Mode]
+    subgraph AI_Providers ["AI Mentor Core (Streaming and Fallbacks)"]
+        AI_Groq["Groq LPU Engine: Qwen 3.8 / Compound / GPT-OSS"]
+        AI_Grok["xAI Grok: grok-2-latest / grok-beta"]
+        AI_Gemini["Google Gemini 3.7 / 2.4 Flash with Thinking Mode"]
     end
 
     subgraph Database ["Persistence Layer (PostgreSQL / Supabase)"]
-        DB_Users[(Users & Auth)]
-        DB_Profiles[(Student & Admin Profiles)]
-        DB_Portfolio[(Skills, Projects, Experiences, Certs)]
-        DB_Academics[(Semester Details & Standing)]
-        DB_Opp[(Opportunities & Applications)]
-        DB_Chat[(Chat Sessions & Messages)]
-        DB_Logs[(Audit Trail & System Logs)]
+        DB_Users[("Users and Auth")]
+        DB_Profiles[("Student and Admin Profiles")]
+        DB_Portfolio[("Skills, Projects, Experiences, Certs")]
+        DB_Academics[("Semester Details and Standing")]
+        DB_Opp[("Opportunities and Applications")]
+        DB_Chat[("Chat Sessions and Messages")]
+        DB_Logs[("Audit Trail and System Logs")]
     end
 
     UI_Student -->|REST / JWT| SVR_Router
